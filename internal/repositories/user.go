@@ -37,7 +37,21 @@ func (repo userRepository) List(ctx context.Context) ([]models.User, error) {
 }
 
 func (repo userRepository) Get(ctx context.Context, id string) (*models.User, error) {
-	return nil, nil
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{
+		"_id": objectID,
+	}
+
+	user := models.User{}
+	if err := repo.coll.FindOne(ctx, filter).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (repo userRepository) Create(ctx context.Context, newUser models.User) (*string, error) {
