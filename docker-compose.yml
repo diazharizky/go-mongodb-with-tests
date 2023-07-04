@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo:6.0.6
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  mongodb-data:
+    driver: local
