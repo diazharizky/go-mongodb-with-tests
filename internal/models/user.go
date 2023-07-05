@@ -14,8 +14,8 @@ type User struct {
 	Age       int16              `json:"age" bson:"age"`
 	FullName  string             `json:"fullName" bson:"fullName"`
 	CreatedAt time.Time          `json:"createdAt" bson:"createdAt"`
-	UpdatedAt *time.Time         `json:"updatedAt" bson:"updatedAt"`
-	DeletedAt *time.Time         `json:"deletedAt" bson:"deletedAt"`
+	UpdatedAt *time.Time         `json:"updatedAt" bson:"updatedAt,omitempty"`
+	DeletedAt *time.Time         `json:"deletedAt" bson:"deletedAt,omitempty"`
 }
 
 func (u User) UpdateFields() bson.D {
@@ -49,9 +49,14 @@ func (u User) UpdateFields() bson.D {
 		})
 	}
 
+	now := time.Now()
+	if u.UpdatedAt == nil {
+		u.UpdatedAt = &now
+	}
+
 	values = append(values, bson.E{
 		Key:   "updatedAt",
-		Value: time.Now(),
+		Value: u.UpdatedAt,
 	})
 
 	return values

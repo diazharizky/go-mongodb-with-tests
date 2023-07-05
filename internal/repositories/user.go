@@ -55,8 +55,14 @@ func (repo userRepository) Get(ctx context.Context, id string) (*models.User, er
 }
 
 func (repo userRepository) Create(ctx context.Context, newUser models.User) (*string, error) {
-	newUser.ID = primitive.NewObjectID()
-	newUser.CreatedAt = time.Now()
+	if newUser.ID == primitive.NilObjectID {
+		newUser.ID = primitive.NewObjectID()
+	}
+
+	now := time.Now()
+	if newUser.CreatedAt.IsZero() {
+		newUser.CreatedAt = now
+	}
 
 	res, err := repo.coll.InsertOne(ctx, newUser)
 	if err != nil {
