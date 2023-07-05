@@ -49,6 +49,15 @@ func main() {
 		fmt.Println("---- Full Name", u.FullName)
 	}
 
+	v := models.User{
+		Username: "newuname",
+		Email:    "new@example.com",
+	}
+
+	if err = appCtx.UserRepository.Update(ctx, *id, v); err != nil {
+		fmt.Printf("Error unable to get user: %v\n", err)
+	}
+
 	user, err := appCtx.UserRepository.Get(ctx, *id)
 	if err != nil {
 		fmt.Printf("Error unable to get user: %v\n", err)

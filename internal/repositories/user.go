@@ -73,7 +73,23 @@ func (repo userRepository) Create(ctx context.Context, newUser models.User) (*st
 	return &newID, nil
 }
 
-func (repo userRepository) Update(ctx context.Context, updateValues models.User) error {
+func (repo userRepository) Update(ctx context.Context, id string, values models.User) error {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{
+		"_id": objectID,
+	}
+
+	update := bson.D{{Key: "$set", Value: values.UpdateFields()}}
+
+	_, err = repo.coll.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
